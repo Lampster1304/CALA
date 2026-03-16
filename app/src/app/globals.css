@@ -1,0 +1,158 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #000000;
+  --color-foreground: #ededed;
+  --font-display: var(--font-orbitron);
+  --font-body: var(--font-inter);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  background: #000;
+  color: #ededed;
+  font-family: var(--font-body), sans-serif;
+  overflow-x: hidden;
+}
+
+/* Vignette overlay for the black hole effect */
+.vignette {
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 30%,
+    rgba(0, 0, 0, 0.4) 60%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+}
+
+/* Glow text effect */
+.text-glow {
+  text-shadow:
+    0 0 20px rgba(147, 130, 255, 0.5),
+    0 0 40px rgba(147, 130, 255, 0.3),
+    0 0 80px rgba(147, 130, 255, 0.15);
+}
+
+/* Stars background for post-hole section */
+.stars-bg {
+  background:
+    radial-gradient(1px 1px at 10% 20%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 30% 60%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1.5px 1.5px at 50% 10%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1px 1px at 70% 40%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 90% 80%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1.5px 1.5px at 15% 85%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 45% 50%, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 80% 15%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 60% 70%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 25% 35%, rgba(255, 255, 255, 0.7), transparent);
+  background-size: 200px 200px;
+  background-color: transparent;
+}
+
+/* ── Galaxy / Solar System Animations ── */
+
+/* Slow pan drift on galaxy background — feels alive like a video */
+.galaxy-drift {
+  animation: galaxy-pan 30s ease-in-out infinite;
+}
+
+@keyframes galaxy-pan {
+  0%   { background-position: 48% 48%; }
+  25%  { background-position: 52% 46%; }
+  50%  { background-position: 50% 52%; }
+  75%  { background-position: 47% 50%; }
+  100% { background-position: 48% 48%; }
+}
+
+/* Subtle shimmer/glow pulse on the galaxy */
+.galaxy-shimmer {
+  animation: galaxy-glow 8s ease-in-out infinite alternate;
+}
+
+@keyframes galaxy-glow {
+  0%   { filter: brightness(1) saturate(1); }
+  50%  { filter: brightness(1.12) saturate(1.15); }
+  100% { filter: brightness(0.95) saturate(1.05); }
+}
+
+/* Nebula drift layer 1 — slow rightward */
+.nebula-drift-1 {
+  animation: nebula1 20s ease-in-out infinite;
+}
+
+@keyframes nebula1 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(30px, -10px, 0) scale(1.05); }
+}
+
+/* Nebula drift layer 2 — slow leftward */
+.nebula-drift-2 {
+  animation: nebula2 25s ease-in-out infinite;
+}
+
+@keyframes nebula2 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-25px, 15px, 0) scale(1.03); }
+}
+
+/* Twinkling stars overlay */
+.stars-twinkle {
+  background:
+    radial-gradient(1px 1px at 12% 25%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1px 1px at 35% 55%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1.5px 1.5px at 55% 15%, rgba(200, 220, 255, 1), transparent),
+    radial-gradient(1px 1px at 72% 45%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 88% 72%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 20% 80%, rgba(200, 200, 255, 0.7), transparent),
+    radial-gradient(1.5px 1.5px at 48% 88%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 65% 32%, rgba(255, 255, 255, 0.6), transparent);
+  background-size: 300px 300px;
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+  100% { opacity: 0.2; }
+}
+
+/* Glass card for content overlay sections */
+.glass-card {
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+}
+
+/* Text styling for overlays on video */
+.text-video-overlay {
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(0, 0, 0, 0.3);
+}
