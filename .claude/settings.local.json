@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev:*)",
+      "Bash(curl:*)",
+      "Bash(del \"C:\\\\Users\\\\User\\\\Documents\\\\Proyectos de José\\\\ClubAstronomiaLasAmericas\\\\package-lock.json\")",
+      "Bash(taskkill:*)",
+      "Bash(cmd //c \"taskkill /PID 13032 /F\")",
+      "Bash(cmd //c \"rmdir /s /q \"\"C:\\\\Users\\\\User\\\\Documents\\\\Proyectos de José\\\\ClubAstronomiaLasAmericas\\\\app\\\\.next\"\"\")",
+      "Bash(npx next build:*)",
+      "Bash(npx next dev)",
+      "Bash(cmd /c \"taskkill /PID 17308 /F\")",
+      "Bash(cmd /c \"taskkill /PID 17308 /F /T\")",
+      "Bash(cmd //c \"netstat -ano | findstr :3000\")",
+      "Bash(cmd //c \"taskkill /F /PID 17308 /T\")",
+      "Bash(cmd //c \"del /Q \"\"C:\\\\Users\\\\User\\\\Documents\\\\Proyectos de José\\\\ClubAstronomiaLasAmericas\\\\app\\\\.next\\\\dev\\\\lock\"\"\")",
+      "Bash(npm run build:*)"
+    ]
+  }
+}
