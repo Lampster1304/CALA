@@ -14,7 +14,14 @@
       "Bash(cmd //c \"netstat -ano | findstr :3000\")",
       "Bash(cmd //c \"taskkill /F /PID 17308 /T\")",
       "Bash(cmd //c \"del /Q \"\"C:\\\\Users\\\\User\\\\Documents\\\\Proyectos de José\\\\ClubAstronomiaLasAmericas\\\\app\\\\.next\\\\dev\\\\lock\"\"\")",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(git rm:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(firebase deploy:*)",
+      "Bash(copy:*)"
     ]
   }
 }

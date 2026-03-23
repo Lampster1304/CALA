@@ -38,15 +38,14 @@ body {
   overflow-x: hidden;
 }
 
+
 /* Vignette overlay for the black hole effect */
 .vignette {
   pointer-events: none;
-  background: radial-gradient(
-    ellipse at center,
-    transparent 30%,
-    rgba(0, 0, 0, 0.4) 60%,
-    rgba(0, 0, 0, 0.85) 100%
-  );
+  background: radial-gradient(ellipse at center,
+      transparent 30%,
+      rgba(0, 0, 0, 0.4) 60%,
+      rgba(0, 0, 0, 0.85) 100%);
 }
 
 /* Glow text effect */
@@ -82,11 +81,25 @@ body {
 }
 
 @keyframes galaxy-pan {
-  0%   { background-position: 48% 48%; }
-  25%  { background-position: 52% 46%; }
-  50%  { background-position: 50% 52%; }
-  75%  { background-position: 47% 50%; }
-  100% { background-position: 48% 48%; }
+  0% {
+    background-position: 48% 48%;
+  }
+
+  25% {
+    background-position: 52% 46%;
+  }
+
+  50% {
+    background-position: 50% 52%;
+  }
+
+  75% {
+    background-position: 47% 50%;
+  }
+
+  100% {
+    background-position: 48% 48%;
+  }
 }
 
 /* Subtle shimmer/glow pulse on the galaxy */
@@ -95,9 +108,17 @@ body {
 }
 
 @keyframes galaxy-glow {
-  0%   { filter: brightness(1) saturate(1); }
-  50%  { filter: brightness(1.12) saturate(1.15); }
-  100% { filter: brightness(0.95) saturate(1.05); }
+  0% {
+    filter: brightness(1) saturate(1);
+  }
+
+  50% {
+    filter: brightness(1.12) saturate(1.15);
+  }
+
+  100% {
+    filter: brightness(0.95) saturate(1.05);
+  }
 }
 
 /* Nebula drift layer 1 — slow rightward */
@@ -106,8 +127,15 @@ body {
 }
 
 @keyframes nebula1 {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  50% { transform: translate3d(30px, -10px, 0) scale(1.05); }
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(30px, -10px, 0) scale(1.05);
+  }
 }
 
 /* Nebula drift layer 2 — slow leftward */
@@ -116,8 +144,15 @@ body {
 }
 
 @keyframes nebula2 {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  50% { transform: translate3d(-25px, 15px, 0) scale(1.03); }
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(-25px, 15px, 0) scale(1.03);
+  }
 }
 
 /* Twinkling stars overlay */
@@ -136,18 +171,17 @@ body {
 }
 
 @keyframes twinkle {
-  0% { opacity: 0.3; }
-  50% { opacity: 0.6; }
-  100% { opacity: 0.2; }
-}
+  0% {
+    opacity: 0.3;
+  }
 
-/* Glass card for content overlay sections */
-.glass-card {
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 1rem;
+  50% {
+    opacity: 0.6;
+  }
+
+  100% {
+    opacity: 0.2;
+  }
 }
 
 /* Text styling for overlays on video */
@@ -155,4 +189,88 @@ body {
   text-shadow:
     0 2px 8px rgba(0, 0, 0, 0.6),
     0 0 30px rgba(0, 0, 0, 0.3);
+}
+
+/* ── NEW: Floating animation for decorative orbs ── */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  25% {
+    transform: translateY(-20px) translateX(8px);
+  }
+  50% {
+    transform: translateY(-30px) translateX(-5px);
+  }
+  75% {
+    transform: translateY(-12px) translateX(10px);
+  }
+}
+
+@keyframes float-reverse {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  25% {
+    transform: translateY(15px) translateX(-10px);
+  }
+  50% {
+    transform: translateY(25px) translateX(5px);
+  }
+  75% {
+    transform: translateY(10px) translateX(-8px);
+  }
+}
+
+/* ── Gradient shift for animated buttons/borders ── */
+@keyframes gradient-x {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ── Subtle border glow pulse ── */
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* ── Line draw animation ── */
+@keyframes draw-line {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ── Orbital ring spin (preserves tilt) ── */
+@keyframes spin-ring {
+  from {
+    transform: rotateX(var(--tilt, 72deg)) rotateZ(0deg);
+  }
+  to {
+    transform: rotateX(var(--tilt, 72deg)) rotateZ(360deg);
+  }
+}
+
+/* ── Particle orbiting (simple rotation around origin) ── */
+@keyframes spin-particle {
+  from {
+    transform: rotate(var(--start-angle, 0deg));
+  }
+  to {
+    transform: rotate(calc(var(--start-angle, 0deg) + 360deg));
+  }
 }

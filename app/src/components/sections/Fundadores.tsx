@@ -3,34 +3,71 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { User, Quote } from "lucide-react";
+import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Fundadores() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const labelRef = useRef<HTMLDivElement>(null);
+  const nameRef = useRef<HTMLHeadingElement>(null);
+  const dividerRef = useRef<HTMLDivElement>(null);
+  const quoteRef = useRef<HTMLDivElement>(null);
+  const descRef = useRef<HTMLParagraphElement>(null);
+  const tagsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
-    const content = contentRef.current;
-    if (!section || !content) return;
-
-    gsap.set(content, { opacity: 0, y: 60 });
+    if (!section) return;
 
     const ctx = gsap.context(() => {
-      gsap.to(content, {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: section,
-          start: "top 80%",
-          end: "top 30%",
-          scrub: 0.5,
-        },
-      });
+      // Image: slide in from left with scale
+      if (imageRef.current) {
+        gsap.fromTo(
+          imageRef.current,
+          { opacity: 0, x: -60, scale: 0.95 },
+          {
+            opacity: 1,
+            x: 0,
+            scale: 1,
+            duration: 1.2,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 70%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
+      // Staggered content reveals
+      const contentEls = [
+        labelRef.current,
+        nameRef.current,
+        dividerRef.current,
+        quoteRef.current,
+        descRef.current,
+        tagsRef.current,
+      ].filter(Boolean);
+
+      gsap.fromTo(
+        contentEls,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          stagger: 0.12,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 65%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
     }, section);
 
     return () => ctx.revert();
@@ -40,68 +77,148 @@ export default function Fundadores() {
     <section
       id="fundadores"
       ref={sectionRef}
-      className="min-h-screen bg-black flex items-center justify-center px-4 relative overflow-hidden py-32"
+      className="min-h-screen flex items-center justify-center px-6 lg:px-24 relative overflow-hidden py-24"
     >
-      {/* Decorative background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-900/10 rounded-full blur-[120px] pointer-events-none" />
-
+      {/* Black hole background image */}
       <div
-        ref={contentRef}
-        className="max-w-5xl w-full mx-auto relative z-10"
-      >
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="font-[family-name:var(--font-orbitron)] text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight">
-            Nuestros <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Fundadores</span>
-          </h2>
-          <p className="font-[family-name:var(--font-inter)] text-white/50 uppercase tracking-[0.2em] text-sm font-medium">
-            Los pioneros de nuestro viaje cósmico
-          </p>
-        </div>
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: "url(/images/blackhole-bg.png)",
+          backgroundSize: "cover",
+          backgroundPosition: "center center",
+          backgroundRepeat: "no-repeat",
+        }}
+      />
 
-        <div className="glass-card p-[1px] max-w-4xl mx-auto shadow-2xl relative group rounded-3xl">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/30 to-blue-500/30 opacity-20 group-hover:opacity-50 transition-opacity duration-700 rounded-3xl" />
+      {/* Vignette overlay for depth */}
+      <div
+        className="absolute inset-0 z-[1] pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, transparent 20%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0.85) 100%)",
+        }}
+      />
 
-          <div className="relative bg-[#050505]/90 backdrop-blur-2xl rounded-3xl p-8 md:p-14 flex flex-col sm:flex-row gap-8 md:gap-12 items-center sm:items-start border border-white/5">
+      {/* Bottom gradient for seamless transition to next section */}
+      <div
+        className="absolute inset-0 z-[1] pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 20%, transparent 40%)",
+        }}
+      />
 
-            {/* Avatar Section */}
-            <div className="relative shrink-0">
-              <div className="w-32 h-32 md:w-44 md:h-44 rounded-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center p-[2px] border border-white/10 shadow-[0_0_40px_rgba(168,85,247,0.15)] group-hover:shadow-[0_0_60px_rgba(168,85,247,0.3)] transition-shadow duration-500">
-                <div className="w-full h-full rounded-full bg-[#111] flex items-center justify-center overflow-hidden">
-                  <User className="w-16 h-16 md:w-20 md:h-20 text-white/10" strokeWidth={1} />
-                </div>
-              </div>
-              <div className="absolute -bottom-2 -right-2 md:-bottom-4 md:-right-4 w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center border-[4px] border-[#0a0a0a] text-white shadow-xl transform transition-transform group-hover:scale-110 duration-300">
-                <Quote className="w-5 h-5 md:w-6 md:h-6 fill-white/20" />
-              </div>
+      {/* Top gradient for seamless transition from hero */}
+      <div
+        className="absolute inset-0 z-[1] pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 15%, transparent 35%)",
+        }}
+      />
+
+      {/* Decorative floating orbs — warm amber tones */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-[2]">
+        <div
+          className="absolute top-[15%] right-[10%] w-[400px] h-[400px] rounded-full bg-amber-500/[0.06] blur-[150px]"
+          style={{ animation: "float 22s ease-in-out infinite" }}
+        />
+        <div
+          className="absolute bottom-[20%] left-[5%] w-[350px] h-[350px] rounded-full bg-orange-600/[0.05] blur-[130px]"
+          style={{ animation: "float-reverse 28s ease-in-out infinite" }}
+        />
+        <div
+          className="absolute top-[60%] right-[30%] w-[200px] h-[200px] rounded-full bg-yellow-500/[0.04] blur-[100px]"
+          style={{ animation: "float 18s ease-in-out infinite 5s" }}
+        />
+      </div>
+
+      <div className="max-w-7xl w-full mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+        {/* Image with gradient border effect */}
+        <div ref={imageRef} className="relative flex justify-center lg:justify-start">
+          <div className="relative group w-full max-w-md mx-auto lg:mx-0">
+            {/* Animated glow behind image — amber tones */}
+            <div className="absolute -inset-1 bg-gradient-to-b from-amber-500/30 via-transparent to-orange-500/20 rounded-2xl blur-md opacity-60 group-hover:opacity-100 transition-opacity duration-700" />
+
+            <div className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden">
+              <Image
+                src="/images/DonEddy.png"
+                alt="Eddy Martínez"
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              />
+              {/* Gradient overlays */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-transparent" />
             </div>
-
-            {/* Content Section */}
-            <div className="flex-1 text-center sm:text-left space-y-6 pt-2">
-              <div className="space-y-2">
-                <h3 className="font-[family-name:var(--font-orbitron)] text-2xl md:text-4xl font-bold text-white tracking-wide">
-                  Don Eddy Martínez
-                </h3>
-                <div className="inline-block px-4 py-1.5 rounded-full bg-gradient-to-r from-purple-500/10 to-transparent border border-purple-500/20 text-purple-300 text-xs md:text-sm font-[family-name:var(--font-inter)] tracking-widest uppercase font-medium">
-                  Fundador Visionario
-                </div>
-              </div>
-
-              <div className="relative pt-4 pb-2">
-                <Quote className="w-12 h-12 text-white/5 absolute -top-4 left-1/2 -translate-x-1/2 sm:translate-x-0 sm:-left-4 pointer-events-none transform -scale-x-100" />
-                <p className="font-[family-name:var(--font-inter)] text-lg md:text-xl text-white/90 leading-relaxed font-light relative z-10 italic">
-                  "Visionario y apasionado por la astronomía, Don Eddy fundó CALA con la misión de inspirar a las nuevas generaciones a mirar hacia las estrellas y descubrir los misterios del universo."
-                </p>
-              </div>
-
-              <div className="h-px w-full bg-gradient-to-r from-white/10 via-white/5 to-transparent" />
-
-              <p className="font-[family-name:var(--font-inter)] text-sm md:text-base text-white/50 leading-relaxed font-light">
-                Su dedicación y liderazgo han sido la fuerza motriz detrás de cada observación, cada taller y cada momento de asombro compartido en nuestra comunidad a lo largo de los años.
-              </p>
-            </div>
-
           </div>
         </div>
+
+        {/* Content */}
+        <div className="space-y-7">
+          {/* Label */}
+          <div ref={labelRef} className="flex items-center gap-3">
+            <div className="h-px w-8 bg-gradient-to-r from-amber-500 to-transparent" />
+            <span className="font-[family-name:var(--font-orbitron)] text-[11px] tracking-[0.3em] text-amber-400/80 uppercase">
+              Fundador
+            </span>
+          </div>
+
+          {/* Name */}
+          <h2
+            ref={nameRef}
+            className="font-[family-name:var(--font-orbitron)] text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight"
+          >
+            <span className="text-white">Eddy</span>
+            <br />
+            <span
+              className="text-transparent bg-clip-text"
+              style={{
+                backgroundImage:
+                  "linear-gradient(to right, #FBBF24, #F59E0B, #D97706)",
+              }}
+            >
+              Martínez
+            </span>
+          </h2>
+
+          {/* Divider */}
+          <div
+            ref={dividerRef}
+            className="h-px w-20 bg-gradient-to-r from-amber-500/60 via-orange-500/30 to-transparent origin-left"
+          />
+
+          {/* Quote */}
+          <div ref={quoteRef} className="relative pl-5 border-l-2 border-amber-500/30">
+            <p className="font-[family-name:var(--font-inter)] text-lg sm:text-xl text-white/80 italic font-light leading-relaxed max-w-lg">
+              &ldquo;Su misión ha sido inspirar a las nuevas generaciones a mirar hacia las estrellas y descubrir los misterios que nos rodean.&rdquo;
+            </p>
+          </div>
+
+          {/* Description */}
+          <p
+            ref={descRef}
+            className="font-[family-name:var(--font-inter)] text-base text-white/50 leading-relaxed max-w-lg font-light"
+          >
+            Como fundador visionario de CALA, Eddy ha dedicado años de pasión a la divulgación
+            científica. Su liderazgo es el núcleo gravitacional que mantiene unida a nuestra comunidad
+            de exploradores.
+          </p>
+
+          {/* Tags */}
+          <div ref={tagsRef} className="flex flex-wrap gap-3 pt-2">
+            {["Presidente", "Astrónomo", "Mentor"].map((tag) => (
+              <span
+                key={tag}
+                className="px-5 py-2.5 rounded-full bg-white/[0.04] border border-amber-500/15 text-white/60 text-sm font-[family-name:var(--font-inter)] hover:bg-amber-500/10 hover:border-amber-500/30 hover:text-white/80 transition-all duration-300 cursor-default"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+
       </div>
     </section>
   );

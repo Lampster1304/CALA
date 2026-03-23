@@ -3,9 +3,9 @@
 import { useCallback, useRef, useState } from "react";
 import BlackHoleHero from "@/components/BlackHoleHero";
 import Navbar from "@/components/Navbar";
-import Fundadores from "@/components/sections/Fundadores";
 import Proyectos from "@/components/sections/Proyectos";
 import Contacto from "@/components/sections/Contacto";
+import SnapScrollManager from "@/components/SnapScrollManager";
 
 export default function Home() {
   const [navbarVisible, setNavbarVisible] = useState(false);
@@ -19,11 +19,13 @@ export default function Home() {
     }
   }, []);
 
+  const snapSections = ["proyectos", "contacto"];
+
   return (
     <main>
       <Navbar visible={navbarVisible} />
       <BlackHoleHero onScrollProgress={handleScrollProgress} />
-      <Fundadores />
+      <SnapScrollManager sectionIds={snapSections} />
       <Proyectos />
       <Contacto />
     </main>

@@ -15,7 +15,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Club de Astronomía Las Américas",
+  title: "Centro Astronómico Las Américas",
   description: "Explora el universo con nosotros",
 };
 
