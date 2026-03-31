@@ -1,15 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { getLenis } from "./SmoothScroll";
-import { Menu, X, Rocket } from "lucide-react";
 
 const NAV_LINKS = [
-  { label: "Sobre Nosotros", id: "sobre-nosotros" },
-  { label: "Fundadores", id: "fundadores" },
-  { label: "Proyectos", id: "proyectos" },
-  { label: "Contacto", id: "contacto" },
+  { label: "Nosotros", id: "sobre-nosotros", symbol: "◐" },
+  { label: "Fundadores", id: "fundadores", symbol: "✦" },
+  { label: "Proyectos", id: "proyectos", symbol: "◈" },
+  { label: "Contacto", id: "contacto", symbol: "◉" },
 ] as const;
 
 const SOBRE_NOSOTROS_PROGRESS = 54 / 80;
@@ -21,6 +20,39 @@ export function getIsNavigating() {
 
 export default function Navbar({ visible }: { visible: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+
+  // Track active section
+  useEffect(() => {
+    const handleScroll = () => {
+      const triggers = ScrollTrigger.getAll();
+      const mainTrigger = triggers.find((t) => t.pin);
+      if (mainTrigger) {
+        const progress = mainTrigger.progress;
+        if (progress > 0.3 && progress < 0.85) {
+          setActiveSection("sobre-nosotros");
+          return;
+        }
+      }
+
+      const sections = NAV_LINKS.map((l) => ({
+        id: l.id,
+        el: document.getElementById(l.id),
+      })).filter((s) => s.el);
+
+      for (const section of sections.reverse()) {
+        if (!section.el) continue;
+        const rect = section.el.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.5) {
+          setActiveSection(section.id);
+          return;
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleNav = (sectionId: string) => {
     setIsOpen(false);
@@ -59,126 +91,199 @@ export default function Navbar({ visible }: { visible: boolean }) {
 
   return (
     <>
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
-          visible
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 -translate-y-4 pointer-events-none"
+      {/* ── Hamburger Button (fixed, top-right) ── */}
+      <button
+        onClick={() => setIsOpen(true)}
+        className={`fixed top-6 right-6 z-50 w-12 h-12 flex items-center justify-center transition-all duration-700 ${
+          visible && !isOpen
+            ? "opacity-100 scale-100"
+            : "opacity-0 scale-90 pointer-events-none"
         }`}
+        aria-label="Open Menu"
       >
-        <div className="bg-black/60 backdrop-blur-xl border-b border-white/[0.06]">
-          <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            {/* Logo */}
-            <span className="font-[family-name:var(--font-orbitron)] text-base font-bold tracking-[0.15em] text-white hover:text-violet-300 transition-colors duration-500 cursor-pointer">
-              CALA
-            </span>
+        {/* Outer orbital ring */}
+        <div className="absolute inset-0 rounded-full border border-white/[0.08] hover:border-violet-400/30 transition-all duration-500" />
+        <div
+          className="absolute inset-[-4px] rounded-full border border-white/[0.03] hover:border-violet-400/10 transition-all duration-700"
+          style={{ animation: "spin-ring 20s linear infinite", "--tilt": "0deg" } as React.CSSProperties}
+        />
 
-            {/* Desktop Links + CTA */}
-            <div className="hidden md:flex items-center gap-8">
-              {NAV_LINKS.map((link) => (
-                <button
-                  key={link.id}
-                  onClick={() => handleNav(link.id)}
-                  className="group relative font-[family-name:var(--font-inter)] text-sm text-white/50 hover:text-white transition-colors duration-300 py-1"
-                >
-                  {link.label}
-                  <span className="absolute -bottom-0.5 left-0 w-full h-[2px] bg-gradient-to-r from-violet-500 to-amber-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out origin-left rounded-full" />
-                </button>
-              ))}
+        {/* Glass background */}
+        <div
+          className="absolute inset-0 rounded-full"
+          style={{
+            background: "rgba(0,0,0,0.5)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+          }}
+        />
 
-              {/* CTA Button */}
-              <button
-                onClick={() => handleNav("contacto")}
-                className="relative flex items-center gap-2 px-5 py-2 rounded-full font-[family-name:var(--font-inter)] text-sm font-medium text-white overflow-hidden transition-all duration-500 hover:shadow-[0_0_25px_-5px_rgba(139,92,246,0.5)] hover:scale-105"
-                style={{
-                  background: "linear-gradient(135deg, #7C3AED, #6366F1, #8B5CF6)",
-                  backgroundSize: "200% 200%",
-                  animation: "gradient-x 4s ease infinite",
-                }}
-              >
-                <Rocket className="w-4 h-4" />
-                Únete
-              </button>
-            </div>
-
-            {/* Mobile Toggle */}
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden w-10 h-10 flex items-center justify-center rounded-full bg-white/[0.05] border border-white/[0.08] text-white/60 hover:text-white hover:bg-white/[0.1] transition-all duration-300"
-              aria-label="Toggle Menu"
-            >
-              {isOpen ? (
-                <X className="w-5 h-5" />
-              ) : (
-                <Menu className="w-5 h-5" />
-              )}
-            </button>
-          </div>
-
-          {/* Animated gradient accent line */}
-          <div className="h-px w-full bg-gradient-to-r from-transparent via-violet-500/40 to-transparent" />
+        {/* Hamburger lines */}
+        <div className="relative flex flex-col items-center gap-[5px]">
+          <span className="block w-[18px] h-px bg-white/70" />
+          <span className="block w-[12px] h-px bg-white/40" />
+          <span className="block w-[18px] h-px bg-white/70" />
         </div>
-      </nav>
+      </button>
 
-      {/* Mobile Menu Overlay */}
+      {/* ── Fullscreen Menu Overlay ── */}
       <div
-        className={`fixed inset-0 z-40 md:hidden transition-all duration-500 flex flex-col items-center justify-center ${
+        className={`fixed inset-0 z-[60] transition-all duration-700 ${
           isOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
         }`}
       >
         {/* Background */}
-        <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" />
-
-        {/* Decorative orbs */}
         <div
-          className="absolute top-1/3 left-1/4 w-40 h-40 sm:w-64 sm:h-64 rounded-full bg-violet-600/10 blur-[80px] sm:blur-[100px] pointer-events-none"
-          style={{ animation: "float 20s ease-in-out infinite" }}
-        />
-        <div
-          className="absolute bottom-1/3 right-1/4 w-32 h-32 sm:w-48 sm:h-48 rounded-full bg-indigo-600/10 blur-[60px] sm:blur-[80px] pointer-events-none"
-          style={{ animation: "float-reverse 25s ease-in-out infinite" }}
+          className="absolute inset-0"
+          style={{
+            background: "radial-gradient(ellipse at 50% 30%, rgba(15,5,30,0.98) 0%, rgba(0,0,0,0.99) 70%)",
+          }}
         />
 
-        <div className="relative z-10 flex flex-col items-center gap-5 sm:gap-8">
-          {NAV_LINKS.map((link, idx) => (
-            <button
-              key={link.id}
-              onClick={() => handleNav(link.id)}
-              className="font-[family-name:var(--font-inter)] text-2xl sm:text-3xl font-light text-white/50 hover:text-white transition-all duration-500"
-              style={{
-                transitionDelay: isOpen ? `${idx * 80}ms` : "0ms",
-                transform: isOpen ? "translateY(0)" : "translateY(20px)",
-                opacity: isOpen ? undefined : 0,
-              }}
-            >
-              {link.label}
-            </button>
-          ))}
+        {/* Cosmic dust */}
+        <div
+          className="absolute inset-0 opacity-20 pointer-events-none"
+          style={{
+            backgroundImage: `
+              radial-gradient(1px 1px at 15% 25%, rgba(167,139,250,0.6), transparent),
+              radial-gradient(1px 1px at 45% 15%, white, transparent),
+              radial-gradient(1.5px 1.5px at 75% 55%, rgba(251,191,36,0.5), transparent),
+              radial-gradient(1px 1px at 25% 75%, white, transparent),
+              radial-gradient(1px 1px at 85% 35%, rgba(167,139,250,0.4), transparent),
+              radial-gradient(1px 1px at 55% 85%, white, transparent),
+              radial-gradient(1px 1px at 35% 45%, rgba(251,191,36,0.3), transparent),
+              radial-gradient(1.5px 1.5px at 65% 25%, white, transparent)
+            `,
+            backgroundSize: "300px 300px",
+            animation: "twinkle 4s ease-in-out infinite alternate",
+          }}
+        />
 
-          {/* Mobile CTA */}
-          <button
-            onClick={() => handleNav("contacto")}
-            className="mt-4 flex items-center gap-2 px-6 sm:px-8 py-3 rounded-full font-[family-name:var(--font-inter)] text-base sm:text-lg font-medium text-white whitespace-nowrap transition-all duration-500"
-            style={{
-              background: "linear-gradient(135deg, #7C3AED, #6366F1, #8B5CF6)",
-              transitionDelay: isOpen ? `${NAV_LINKS.length * 80}ms` : "0ms",
-              transform: isOpen ? "translateY(0)" : "translateY(20px)",
-              opacity: isOpen ? undefined : 0,
-            }}
-          >
-            <Rocket className="w-5 h-5" />
-            Únete
-          </button>
-        </div>
+        {/* Ambient glow */}
+        <div
+          className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full pointer-events-none"
+          style={{
+            background: "radial-gradient(circle, rgba(167,139,250,0.04) 0%, transparent 70%)",
+            animation: "float 20s ease-in-out infinite",
+          }}
+        />
 
+        {/* Close button */}
         <button
           onClick={() => setIsOpen(false)}
-          className="relative z-10 mt-12 w-14 h-14 flex items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.03] text-white/40 hover:text-white hover:border-white/20 transition-all duration-300"
+          className={`absolute top-6 right-6 z-20 w-12 h-12 flex items-center justify-center rounded-full border border-white/[0.08] hover:border-violet-400/30 transition-all duration-500 ${
+            isOpen ? "opacity-100 scale-100" : "opacity-0 scale-90"
+          }`}
+          style={{
+            transitionDelay: isOpen ? "300ms" : "0ms",
+            background: "rgba(0,0,0,0.3)",
+            backdropFilter: "blur(12px)",
+          }}
+          aria-label="Close Menu"
         >
-          <X className="w-5 h-5" />
+          <div className="relative w-5 h-5">
+            <span className="absolute top-1/2 left-0 w-full h-px bg-white/60 rotate-45" />
+            <span className="absolute top-1/2 left-0 w-full h-px bg-white/60 -rotate-45" />
+          </div>
         </button>
+
+        {/* Navigation content */}
+        <div className="relative z-10 h-full flex flex-col items-center justify-center px-8">
+          {/* Logo at top */}
+          <div
+            className="absolute top-7 left-6 transition-all duration-700"
+            style={{
+              transitionDelay: isOpen ? "100ms" : "0ms",
+              opacity: isOpen ? 1 : 0,
+              transform: isOpen ? "translateY(0)" : "translateY(-10px)",
+            }}
+          >
+            <button
+              onClick={() => {
+                setIsOpen(false);
+                const lenis = getLenis();
+                if (lenis) lenis.scrollTo(0, { duration: 2 });
+              }}
+              className="font-[family-name:var(--font-orbitron)] text-[13px] font-semibold tracking-[0.3em] text-white/60 hover:text-white transition-colors duration-500"
+            >
+              CALA
+            </button>
+          </div>
+
+          {/* Section links */}
+          <div className="flex flex-col items-center gap-1">
+            {NAV_LINKS.map((link, idx) => {
+              const isActive = activeSection === link.id;
+              return (
+                <button
+                  key={link.id}
+                  onClick={() => handleNav(link.id)}
+                  className="group relative py-5 px-8 transition-all duration-700"
+                  style={{
+                    transitionDelay: isOpen ? `${150 + idx * 70}ms` : "0ms",
+                    transform: isOpen ? "translateY(0)" : "translateY(40px)",
+                    opacity: isOpen ? 1 : 0,
+                  }}
+                >
+                  {/* Active background pill */}
+                  {isActive && (
+                    <div
+                      className="absolute inset-x-2 inset-y-1 rounded-2xl border border-violet-500/10"
+                      style={{
+                        background: "rgba(167,139,250,0.04)",
+                        animation: "glow-pulse 3s ease-in-out infinite",
+                      }}
+                    />
+                  )}
+
+                  <div className="relative flex items-center gap-5">
+                    {/* Symbol */}
+                    <span
+                      className={`text-base transition-all duration-500 ${
+                        isActive
+                          ? "text-violet-400"
+                          : "text-white/10 group-hover:text-white/30"
+                      }`}
+                    >
+                      {link.symbol}
+                    </span>
+
+                    {/* Label */}
+                    <span
+                      className={`font-[family-name:var(--font-orbitron)] text-xl sm:text-2xl tracking-[0.2em] transition-all duration-500 ${
+                        isActive
+                          ? "text-white"
+                          : "text-white/25 group-hover:text-white/70"
+                      }`}
+                    >
+                      {link.label.toUpperCase()}
+                    </span>
+
+                    {/* Active indicator dot */}
+                    {isActive && (
+                      <div className="w-1.5 h-1.5 rounded-full bg-violet-400 shadow-[0_0_10px_rgba(167,139,250,0.8)]" />
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Coordinates decoration */}
+          <p
+            className="mt-20 font-[family-name:var(--font-inter)] text-[10px] tracking-[0.3em] text-white/8 transition-all duration-700"
+            style={{
+              transitionDelay: isOpen
+                ? `${350 + NAV_LINKS.length * 70}ms`
+                : "0ms",
+              opacity: isOpen ? 1 : 0,
+            }}
+          >
+            18.4861° N · 69.9312° W
+          </p>
+        </div>
       </div>
     </>
   );
