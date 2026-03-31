@@ -2,34 +2,42 @@
 
 import { useEffect, useRef } from "react";
 import { getLenis } from "./SmoothScroll";
+import { getIsNavigating } from "./Navbar";
 
 interface SnapScrollManagerProps {
   sectionIds: string[];
 }
 
-export default function SnapScrollManager({ sectionIds }: SnapScrollManagerProps) {
+export default function SnapScrollManager({
+  sectionIds,
+}: SnapScrollManagerProps) {
   const isSnapping = useRef(false);
   const accumulatedDelta = useRef(0);
   const decayTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    const DELTA_THRESHOLD = 80;
-    const DECAY_MS = 250;
-    const SNAP_DURATION = 1.4;
-    const POST_SNAP_COOLDOWN = 600;
+    const DELTA_THRESHOLD = 60;
+    const DECAY_MS = 200;
+    const SNAP_DURATION = 1.2;
+    const POST_SNAP_COOLDOWN = 500;
 
-    const getCurrentSectionIndex = () => {
-      const sections = sectionIds
+    const getSections = () =>
+      sectionIds
         .map((id) => document.getElementById(id))
         .filter(Boolean) as HTMLElement[];
 
+    const getCurrentSectionIndex = () => {
+      const sections = getSections();
       let currentIndex = -1;
       let maxRatio = 0;
 
       for (let i = 0; i < sections.length; i++) {
         const rect = sections[i].getBoundingClientRect();
         const visible =
-          Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0));
+          Math.max(
+            0,
+            Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0)
+          );
         const ratio = visible / window.innerHeight;
         if (ratio > maxRatio) {
           maxRatio = ratio;
@@ -61,10 +69,13 @@ export default function SnapScrollManager({ sectionIds }: SnapScrollManagerProps
     };
 
     const handleWheel = (e: WheelEvent) => {
+      // Don't interfere with navbar navigation
+      if (getIsNavigating()) return;
+
       const { currentIndex, maxRatio, sections } = getCurrentSectionIndex();
 
       // Not inside a snap section — let normal scroll happen
-      if (currentIndex === -1 || maxRatio < 0.4) return;
+      if (currentIndex === -1 || maxRatio < 0.3) return;
 
       // Block scroll while snapping
       if (isSnapping.current) {
@@ -103,13 +114,13 @@ export default function SnapScrollManager({ sectionIds }: SnapScrollManagerProps
     };
 
     const handleTouchEnd = (e: TouchEvent) => {
-      if (isSnapping.current) return;
+      if (isSnapping.current || getIsNavigating()) return;
 
       const deltaY = touchStartY - e.changedTouches[0].clientY;
-      if (Math.abs(deltaY) < 50) return;
+      if (Math.abs(deltaY) < 40) return;
 
       const { currentIndex, maxRatio, sections } = getCurrentSectionIndex();
-      if (currentIndex === -1 || maxRatio < 0.4) return;
+      if (currentIndex === -1 || maxRatio < 0.3) return;
 
       const direction = deltaY > 0 ? 1 : -1;
       const nextIndex = currentIndex + direction;
