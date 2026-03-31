@@ -170,8 +170,8 @@ const SobreNosotros = forwardRef<HTMLDivElement>(function SobreNosotros(
         <div
           className="absolute left-1/2 top-[38%] -translate-x-1/2 -translate-y-1/2"
           style={{
-            width: "120vmin",
-            height: "120vmin",
+            width: "min(120vmin, 90vw)",
+            height: "min(120vmin, 90vw)",
             background:
               "radial-gradient(circle, rgba(255,140,50,0.12) 0%, rgba(220,100,30,0.06) 25%, rgba(180,60,20,0.03) 45%, transparent 65%)",
           }}
@@ -181,191 +181,194 @@ const SobreNosotros = forwardRef<HTMLDivElement>(function SobreNosotros(
         <div
           className="absolute left-1/2 top-[38%] -translate-x-1/2 -translate-y-1/2"
           style={{
-            width: "70vmin",
-            height: "70vmin",
+            width: "min(70vmin, 70vw)",
+            height: "min(70vmin, 70vw)",
             background:
               "radial-gradient(circle, rgba(255,180,80,0.18) 0%, rgba(245,158,11,0.08) 40%, transparent 70%)",
             animation: "glow-pulse 6s ease-in-out infinite",
           }}
         />
 
-        {/* Orbital ring 1 — large, slow */}
-        <div
-          className="absolute left-1/2 top-[38%] rounded-full"
-          style={{
-            width: "65vmin",
-            height: "65vmin",
-            marginLeft: "-32.5vmin",
-            marginTop: "-32.5vmin",
-            border: "1.5px solid rgba(251,191,36,0.15)",
-            transform: "rotateX(75deg)",
-            animation: "spin-ring 35s linear infinite",
-          }}
-        />
-
-        {/* Orbital ring 2 — medium, reverse */}
-        <div
-          className="absolute left-1/2 top-[38%] rounded-full"
-          style={{
-            width: "85vmin",
-            height: "85vmin",
-            marginLeft: "-42.5vmin",
-            marginTop: "-42.5vmin",
-            border: "1px solid rgba(245,158,11,0.10)",
-            transform: "rotateX(70deg)",
-            animation: "spin-ring 55s linear infinite reverse",
-          }}
-        />
-
-        {/* Orbital ring 3 — largest, subtle */}
-        <div
-          className="absolute left-1/2 top-[38%] rounded-full"
-          style={{
-            width: "110vmin",
-            height: "110vmin",
-            marginLeft: "-55vmin",
-            marginTop: "-55vmin",
-            border: "1px solid rgba(251,191,36,0.05)",
-            transform: "rotateX(65deg)",
-            animation: "spin-ring 80s linear infinite",
-          }}
-        />
-
-        {/* Orbital ring 4 — tilted differently for depth */}
-        <div
-          className="absolute left-1/2 top-[38%] rounded-full"
-          style={{
-            width: "50vmin",
-            height: "50vmin",
-            marginLeft: "-25vmin",
-            marginTop: "-25vmin",
-            border: "1px solid rgba(255,200,100,0.08)",
-            transform: "rotateX(80deg) rotateY(15deg)",
-            animation: "spin-ring 28s linear infinite reverse",
-          }}
-        />
-
-        {/* Light arc — crescent glow at planet edge (top-right) */}
-        <div
-          className="absolute"
-          style={{
-            left: "calc(50% + 8vmin)",
-            top: "calc(38% - 14vmin)",
-            width: "18vmin",
-            height: "30vmin",
-            background:
-              "radial-gradient(ellipse at 30% 50%, rgba(255,200,120,0.15) 0%, transparent 60%)",
-            transform: "rotate(-20deg)",
-            filter: "blur(8px)",
-          }}
-        />
-
-        {/* Light arc — opposite side (bottom-left) */}
-        <div
-          className="absolute"
-          style={{
-            left: "calc(50% - 22vmin)",
-            top: "calc(38% + 6vmin)",
-            width: "14vmin",
-            height: "22vmin",
-            background:
-              "radial-gradient(ellipse at 70% 50%, rgba(255,160,80,0.10) 0%, transparent 60%)",
-            transform: "rotate(25deg)",
-            filter: "blur(6px)",
-          }}
-        />
-
-        {/* Lens flare spots */}
-        <div
-          className="absolute rounded-full"
-          style={{
-            left: "calc(50% + 15vmin)",
-            top: "calc(38% - 10vmin)",
-            width: "4vmin",
-            height: "4vmin",
-            background:
-              "radial-gradient(circle, rgba(255,240,200,0.3) 0%, transparent 70%)",
-            animation: "glow-pulse 3s ease-in-out infinite",
-          }}
-        />
-        <div
-          className="absolute rounded-full"
-          style={{
-            left: "calc(50% + 20vmin)",
-            top: "calc(38% - 5vmin)",
-            width: "2vmin",
-            height: "2vmin",
-            background:
-              "radial-gradient(circle, rgba(255,220,150,0.25) 0%, transparent 70%)",
-            animation: "glow-pulse 4s ease-in-out infinite 1s",
-          }}
-        />
-
-        {/* Orbiting particles — small bright dots that appear to orbit */}
-        {RING_PARTICLES.map((p, i) => (
+        {/* Orbital rings, particles, arcs, dust — desktop only for perf */}
+        <div className="hidden sm:contents">
+          {/* Orbital ring 1 — large, slow */}
           <div
-            key={`rp-${i}`}
-            className="absolute rounded-full"
+            className="absolute left-1/2 top-[38%] rounded-full"
             style={{
-              left: "50%",
-              top: "38%",
-              width: `${p.ring === 1 ? 3 : 2}px`,
-              height: `${p.ring === 1 ? 3 : 2}px`,
-              background: p.ring === 1 ? "rgba(255,200,100,0.7)" : "rgba(251,191,36,0.5)",
-              boxShadow: `0 0 ${p.ring === 1 ? 6 : 4}px rgba(255,180,80,0.4)`,
-              transformOrigin: `0 ${p.ring === 1 ? "32.5vmin" : "42.5vmin"}`,
-              transform: `rotate(${p.angle}deg)`,
-              animation: `spin-particle ${p.ring === 1 ? 35 : 55}s linear infinite${p.ring === 2 ? " reverse" : ""}`,
+              width: "65vmin",
+              height: "65vmin",
+              marginLeft: "-32.5vmin",
+              marginTop: "-32.5vmin",
+              border: "1.5px solid rgba(251,191,36,0.15)",
+              transform: "rotateX(75deg)",
+              animation: "spin-ring 35s linear infinite",
             }}
           />
-        ))}
 
-        {/* Floating cosmic dust — various depths */}
-        {[
-          { x: "15%", y: "20%", s: 2.5, d: 18, o: 0.5 },
-          { x: "78%", y: "15%", s: 2, d: 22, o: 0.4 },
-          { x: "8%", y: "55%", s: 1.5, d: 20, o: 0.3 },
-          { x: "88%", y: "60%", s: 2.5, d: 25, o: 0.5 },
-          { x: "45%", y: "12%", s: 2, d: 17, o: 0.4 },
-          { x: "25%", y: "70%", s: 1.5, d: 23, o: 0.3 },
-          { x: "65%", y: "75%", s: 2, d: 19, o: 0.4 },
-          { x: "35%", y: "30%", s: 1, d: 26, o: 0.25 },
-          { x: "55%", y: "65%", s: 1.5, d: 21, o: 0.35 },
-          { x: "90%", y: "35%", s: 1, d: 24, o: 0.2 },
-        ].map((p, i) => (
+          {/* Orbital ring 2 — medium, reverse */}
           <div
-            key={`dust-${i}`}
-            className="absolute rounded-full"
+            className="absolute left-1/2 top-[38%] rounded-full"
             style={{
-              left: p.x,
-              top: p.y,
-              width: `${p.s}px`,
-              height: `${p.s}px`,
-              background: `rgba(255,200,120,${p.o})`,
-              boxShadow: `0 0 ${p.s * 2}px rgba(255,180,80,${p.o * 0.5})`,
-              animation: `float ${p.d}s ease-in-out infinite`,
-              animationDelay: `${i * 1.8}s`,
+              width: "85vmin",
+              height: "85vmin",
+              marginLeft: "-42.5vmin",
+              marginTop: "-42.5vmin",
+              border: "1px solid rgba(245,158,11,0.10)",
+              transform: "rotateX(70deg)",
+              animation: "spin-ring 55s linear infinite reverse",
             }}
           />
-        ))}
 
-        {/* Radial light streaks from behind planet */}
-        {[0, 60, 120, 180, 240, 300].map((angle) => (
+          {/* Orbital ring 3 — largest, subtle */}
           <div
-            key={`ray-${angle}`}
+            className="absolute left-1/2 top-[38%] rounded-full"
+            style={{
+              width: "110vmin",
+              height: "110vmin",
+              marginLeft: "-55vmin",
+              marginTop: "-55vmin",
+              border: "1px solid rgba(251,191,36,0.05)",
+              transform: "rotateX(65deg)",
+              animation: "spin-ring 80s linear infinite",
+            }}
+          />
+
+          {/* Orbital ring 4 — tilted differently for depth */}
+          <div
+            className="absolute left-1/2 top-[38%] rounded-full"
+            style={{
+              width: "50vmin",
+              height: "50vmin",
+              marginLeft: "-25vmin",
+              marginTop: "-25vmin",
+              border: "1px solid rgba(255,200,100,0.08)",
+              transform: "rotateX(80deg) rotateY(15deg)",
+              animation: "spin-ring 28s linear infinite reverse",
+            }}
+          />
+
+          {/* Light arc — crescent glow at planet edge (top-right) */}
+          <div
             className="absolute"
             style={{
-              left: "50%",
-              top: "38%",
-              width: "1px",
-              height: "40vmin",
+              left: "calc(50% + 8vmin)",
+              top: "calc(38% - 14vmin)",
+              width: "18vmin",
+              height: "30vmin",
               background:
-                "linear-gradient(to bottom, rgba(255,180,80,0.08) 0%, transparent 100%)",
-              transformOrigin: "top center",
-              transform: `rotate(${angle}deg)`,
+                "radial-gradient(ellipse at 30% 50%, rgba(255,200,120,0.15) 0%, transparent 60%)",
+              transform: "rotate(-20deg)",
+              filter: "blur(8px)",
             }}
           />
-        ))}
+
+          {/* Light arc — opposite side (bottom-left) */}
+          <div
+            className="absolute"
+            style={{
+              left: "calc(50% - 22vmin)",
+              top: "calc(38% + 6vmin)",
+              width: "14vmin",
+              height: "22vmin",
+              background:
+                "radial-gradient(ellipse at 70% 50%, rgba(255,160,80,0.10) 0%, transparent 60%)",
+              transform: "rotate(25deg)",
+              filter: "blur(6px)",
+            }}
+          />
+
+          {/* Lens flare spots */}
+          <div
+            className="absolute rounded-full"
+            style={{
+              left: "calc(50% + 15vmin)",
+              top: "calc(38% - 10vmin)",
+              width: "4vmin",
+              height: "4vmin",
+              background:
+                "radial-gradient(circle, rgba(255,240,200,0.3) 0%, transparent 70%)",
+              animation: "glow-pulse 3s ease-in-out infinite",
+            }}
+          />
+          <div
+            className="absolute rounded-full"
+            style={{
+              left: "calc(50% + 20vmin)",
+              top: "calc(38% - 5vmin)",
+              width: "2vmin",
+              height: "2vmin",
+              background:
+                "radial-gradient(circle, rgba(255,220,150,0.25) 0%, transparent 70%)",
+              animation: "glow-pulse 4s ease-in-out infinite 1s",
+            }}
+          />
+
+          {/* Orbiting particles — small bright dots that appear to orbit */}
+          {RING_PARTICLES.map((p, i) => (
+            <div
+              key={`rp-${i}`}
+              className="absolute rounded-full"
+              style={{
+                left: "50%",
+                top: "38%",
+                width: `${p.ring === 1 ? 3 : 2}px`,
+                height: `${p.ring === 1 ? 3 : 2}px`,
+                background: p.ring === 1 ? "rgba(255,200,100,0.7)" : "rgba(251,191,36,0.5)",
+                boxShadow: `0 0 ${p.ring === 1 ? 6 : 4}px rgba(255,180,80,0.4)`,
+                transformOrigin: `0 ${p.ring === 1 ? "32.5vmin" : "42.5vmin"}`,
+                transform: `rotate(${p.angle}deg)`,
+                animation: `spin-particle ${p.ring === 1 ? 35 : 55}s linear infinite${p.ring === 2 ? " reverse" : ""}`,
+              }}
+            />
+          ))}
+
+          {/* Floating cosmic dust — various depths */}
+          {[
+            { x: "15%", y: "20%", s: 2.5, d: 18, o: 0.5 },
+            { x: "78%", y: "15%", s: 2, d: 22, o: 0.4 },
+            { x: "8%", y: "55%", s: 1.5, d: 20, o: 0.3 },
+            { x: "88%", y: "60%", s: 2.5, d: 25, o: 0.5 },
+            { x: "45%", y: "12%", s: 2, d: 17, o: 0.4 },
+            { x: "25%", y: "70%", s: 1.5, d: 23, o: 0.3 },
+            { x: "65%", y: "75%", s: 2, d: 19, o: 0.4 },
+            { x: "35%", y: "30%", s: 1, d: 26, o: 0.25 },
+            { x: "55%", y: "65%", s: 1.5, d: 21, o: 0.35 },
+            { x: "90%", y: "35%", s: 1, d: 24, o: 0.2 },
+          ].map((p, i) => (
+            <div
+              key={`dust-${i}`}
+              className="absolute rounded-full"
+              style={{
+                left: p.x,
+                top: p.y,
+                width: `${p.s}px`,
+                height: `${p.s}px`,
+                background: `rgba(255,200,120,${p.o})`,
+                boxShadow: `0 0 ${p.s * 2}px rgba(255,180,80,${p.o * 0.5})`,
+                animation: `float ${p.d}s ease-in-out infinite`,
+                animationDelay: `${i * 1.8}s`,
+              }}
+            />
+          ))}
+
+          {/* Radial light streaks from behind planet */}
+          {[0, 60, 120, 180, 240, 300].map((angle) => (
+            <div
+              key={`ray-${angle}`}
+              className="absolute"
+              style={{
+                left: "50%",
+                top: "38%",
+                width: "1px",
+                height: "40vmin",
+                background:
+                  "linear-gradient(to bottom, rgba(255,180,80,0.08) 0%, transparent 100%)",
+                transformOrigin: "top center",
+                transform: `rotate(${angle}deg)`,
+              }}
+            />
+          ))}
+        </div>
       </div>
 
       {/* ═══════════════════════════════════════════ */}
@@ -386,7 +389,7 @@ const SobreNosotros = forwardRef<HTMLDivElement>(function SobreNosotros(
       {/*  by planet silhouette (T and E cut off)      */}
       {/* ═══════════════════════════════════════════ */}
       <div
-        className="absolute inset-0 pointer-events-none overflow-hidden"
+        className="absolute inset-0 pointer-events-none overflow-hidden hidden sm:block"
       >
         <h2
           className="absolute font-[family-name:var(--font-orbitron)] font-black uppercase select-none"
@@ -474,7 +477,7 @@ const SobreNosotros = forwardRef<HTMLDivElement>(function SobreNosotros(
 
           {/* Stats */}
           <div ref={setHudRef(1)} className="mb-8">
-            <div className="flex justify-center gap-8 sm:gap-14">
+            <div className="grid grid-cols-2 gap-x-6 gap-y-4 justify-items-center sm:flex sm:justify-center sm:gap-14">
               {STATS.map((stat) => (
                 <div key={stat.label}>
                   <div

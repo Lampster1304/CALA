@@ -274,3 +274,42 @@ body {
     transform: rotate(calc(var(--start-angle, 0deg) + 360deg));
   }
 }
+
+/* ── Slide-up reveal for scroll elements ── */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-up {
+  animation: slide-up 0.8s ease-out forwards;
+}
+
+/* ── Card glow effect on hover ── */
+.card-glow {
+  transition: box-shadow 0.5s ease, transform 0.5s ease;
+}
+
+.card-glow:hover {
+  box-shadow:
+    0 0 25px -5px rgba(139, 92, 246, 0.25),
+    0 0 50px -12px rgba(139, 92, 246, 0.15);
+}
+
+/* ── Mouse scroll indicator animation ── */
+@keyframes scroll-wheel {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}

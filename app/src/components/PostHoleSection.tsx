@@ -26,7 +26,7 @@ export default function PostHoleSection() {
   return (
     <section
       ref={sectionRef}
-      className="stars-bg relative min-h-screen flex flex-col items-center justify-center px-6 py-24"
+      className="stars-bg relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-16 sm:py-24"
     >
       <div
         className={`max-w-3xl mx-auto text-center transition-all duration-1000 ${
@@ -36,7 +36,7 @@ export default function PostHoleSection() {
         {/* Decorative line */}
         <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-purple-400 to-transparent mx-auto mb-8" />
 
-        <h2 className="font-[family-name:var(--font-display)] text-3xl md:text-5xl font-bold text-white mb-6">
+        <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl md:text-5xl font-bold text-white mb-6">
           Bienvenido al Universo
         </h2>
 
@@ -46,7 +46,7 @@ export default function PostHoleSection() {
           entender nuestro lugar en el cosmos.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mt-12 sm:mt-16">
           <FeatureCard
             icon="🔭"
             title="Observación"

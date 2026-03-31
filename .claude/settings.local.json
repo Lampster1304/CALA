@@ -21,7 +21,12 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(firebase deploy:*)",
-      "Bash(copy:*)"
+      "Bash(copy:*)",
+      "Bash(findstr:*)",
+      "Bash(npx tsc:*)",
+      "Bash(timeout 20 npx next dev:*)",
+      "Bash(timeout 25 npx next dev:*)",
+      "Bash(ls \"C:\\\\Users\\\\User\\\\Documents\\\\Proyectos de José\\\\ClubAstronomiaLasAmericas\\\\app\\\\src\\\\lib\"\" 2>nul || echo \"lib directory does not exist \")"
     ]
   }
 }

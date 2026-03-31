@@ -92,7 +92,7 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
 
     const tryPlay = () => {
       video.muted = true;
-      video.play().then(safeStartIntro).catch(() => {});
+      video.play().then(safeStartIntro).catch(() => { });
     };
 
     // Attempt 1: immediate
@@ -149,8 +149,12 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
       const eddyImage = eddyImageRef.current;
       if (!videoWrapper || !title) return;
 
-      // Responsive breakpoint
-      const isLg = window.innerWidth >= 1024;
+      // Responsive breakpoints
+      const vw = window.innerWidth;
+      const isLg = vw >= 1024;
+      const isMd = vw >= 768;
+      const isSm = vw >= 640;
+      const isMobile = !isLg;
 
       // Initial states
       if (stars) gsap.set(stars, { opacity: 0 });
@@ -161,7 +165,7 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
       if (eddyImage) gsap.set(eddyImage, {
         opacity: 0,
         x: isLg ? -200 : 0,
-        y: isLg ? 0 : -250,
+        y: isLg ? 0 : isSm ? -200 : -180,
         scale: 0,
       });
 
@@ -189,7 +193,7 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
           trigger: containerRef.current,
           start: "top top",
           end: "+=225%",
-          scrub: 0.1,
+          scrub: isMobile ? 2 : 1,
           pin: true,
           pinSpacing: true,
           onUpdate: (self) => {
@@ -216,7 +220,7 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
 
                 lockTween = gsap.to(scrollObj, {
                   y: transitionEndPos,
-                  duration: 4.5,
+                  duration: 3.5,
                   ease: "power2.inOut",
                   onUpdate: () => {
                     window.scrollTo(0, scrollObj.y);
@@ -281,21 +285,21 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
       if (sobreNosotros) {
         tl.to(
           sobreNosotros,
-          { opacity: 0, y: -40, duration: 8, ease: "power2.in" },
+          { opacity: 0, y: -40, duration: 8, ease: "power2.in", force3D: true },
           36
         );
       }
       if (blackholeBg) {
         tl.to(
           blackholeBg,
-          { opacity: 1, scale: 1, duration: 8, ease: "power2.out" },
+          { opacity: 1, scale: 1, duration: 8, ease: "power2.out", force3D: true },
           36
         );
       }
       if (bhContent) {
         tl.to(
           bhContent.children,
-          { opacity: 1, y: 0, duration: 6, stagger: 0.8, ease: "power3.out" },
+          { opacity: 1, y: 0, duration: 6, stagger: 0.8, ease: "power3.out", force3D: true },
           38
         );
       }
@@ -304,56 +308,64 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
       }
 
       // ── Phase 6 (48-54): Gravitational drift — text pulled toward black hole ──
-      // Desktop: text drifts right toward BH | Mobile: text drifts down toward BH
+      // Desktop: text drifts right toward BH | Mobile/Tablet: text drifts down toward BH
       if (bhContent) {
         tl.to(
           bhContent.children,
           {
             x: isLg ? 50 : 0,
-            y: isLg ? 0 : 40,
-            scale: 0.96,
+            y: isLg ? 0 : isSm ? 30 : 25,
+            scale: isMobile ? 1 : 0.96,
             rotation: isLg ? 1.5 : 0,
             duration: 6,
             stagger: 0.3,
             ease: "power1.in",
+            force3D: true,
           },
           48
         );
       }
       if (bhImage) {
-        tl.to(bhImage, { scale: 1.08, duration: 6, ease: "power1.in" }, 48);
+        tl.to(bhImage, { scale: 1.08, duration: 6, ease: "power1.in", force3D: true }, 48);
       }
 
       // ── Phase 7 (54-62): Devour — text sucked into the black hole ──
-      // Desktop: text flies right into BH | Mobile: text flies down into BH
+      // Desktop: text flies right into BH | Mobile/Tablet: text flies down into BH
       if (bhContent) {
         tl.to(
           bhContent.children,
           {
             x: isLg ? 500 : 0,
-            y: isLg ? 0 : 400,
+            y: isLg ? 0 : isSm ? 350 : 300,
             scale: 0,
             opacity: 0,
             rotation: isLg ? 8 : 0,
             duration: 8,
-            stagger: 0.6,
+            stagger: isMobile ? 0.4 : 0.6,
             ease: "power3.in",
+            force3D: true,
           },
           54
         );
       }
       if (bhImage) {
-        tl.to(bhImage, { scale: 1.4, duration: 8, ease: "power2.in" }, 54);
+        tl.to(bhImage, { scale: isLg ? 1.4 : 1.3, duration: 8, ease: "power2.in", force3D: true }, 54);
       }
 
       // ── Phase 8 (62-72): BH moves + Eddy expelled ──
       // Desktop: BH slides left, Eddy appears right
-      // Mobile: BH moves up to top, Eddy expelled downward below
+      // Mobile/Tablet: BH moves up using yPercent (GPU-only, no layout repaints)
       if (bhImage) {
         if (isLg) {
-          tl.to(bhImage, { xPercent: -122, duration: 10, ease: "power2.inOut" }, 62);
+          tl.to(bhImage, { xPercent: -125, yPercent: 0, duration: 10, ease: "power2.inOut", force3D: true }, 62);
         } else {
-          tl.to(bhImage, { bottom: "auto", top: "8%", duration: 10, ease: "power2.inOut" }, 62);
+          // Use yPercent instead of top/bottom to avoid layout repaints
+          tl.to(bhImage, {
+            yPercent: isSm ? -120 : -140,
+            duration: 10,
+            ease: "power2.inOut",
+            force3D: true,
+          }, 62);
         }
       }
       if (eddyImage) {
@@ -366,6 +378,7 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
             scale: 1,
             duration: 8,
             ease: "back.out(1.2)",
+            force3D: true,
           },
           65
         );
@@ -402,9 +415,10 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
     };
   }, [introComplete]);
 
-  // ── Mouse parallax ──
+  // ── Mouse parallax (desktop only — skip on touch devices) ──
   useEffect(() => {
     if (!introComplete) return;
+    if ("ontouchstart" in window || navigator.maxTouchPoints > 0) return;
 
     const videoWrapper = videoWrapperRef.current;
     if (!videoWrapper) return;
@@ -435,7 +449,8 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
       {/* Stars background — hidden at start, fades in with black hole */}
       <div ref={starsRef} className="absolute inset-0 z-0 opacity-0">
         <div className="absolute inset-0 stars-bg" />
-        <div className="absolute inset-0 stars-twinkle" />
+        {/* Twinkle disabled on mobile for perf — CSS animation + radial-gradients is heavy */}
+        <div className="absolute inset-0 stars-twinkle hidden sm:block" />
       </div>
       {/* Black hole video — behind Earth */}
       <div
@@ -443,7 +458,6 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
         className="absolute inset-[-5%] z-[1] flex items-center justify-center"
         style={{
           transformOrigin: "center center",
-          willChange: "transform, opacity",
           opacity: 0,
         }}
       />
@@ -454,7 +468,7 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
         ref={videoWrapperRef}
         className="absolute inset-0 z-[2] flex items-center justify-center"
         style={{
-          transition: "translate 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)",
+          transition: "translate 0.6s cubic-bezier(0.25, 0.1, 0.25, 1)",
           transformOrigin: "center center",
           willChange: "transform, opacity, translate",
         }}
@@ -483,27 +497,27 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
       {/* Black hole + Founder layout — revealed after Marte cross-fade */}
       <div
         ref={blackholeBgRef}
-        className="absolute inset-0 z-[13] pointer-events-none opacity-0 flex items-center justify-center px-4 sm:px-6 lg:px-24"
+        className="absolute inset-0 z-[13] pointer-events-none opacity-0 flex items-center justify-center px-3 sm:px-6 md:px-10 lg:px-24"
         style={{
           willChange: "transform, opacity",
           transformOrigin: "center center",
         }}
       >
-        <div className="max-w-7xl w-full relative" style={{ minHeight: "70vh" }}>
+        <div className="max-w-7xl w-full h-full relative">
 
-          {/* Founder info — mobile: centered top / desktop: absolute left */}
+          {/* Founder info — mobile: top area / desktop: left half */}
           <div
             ref={bhContentRef}
-            className="absolute left-0 right-0 lg:right-auto top-[6%] lg:top-1/2 lg:-translate-y-1/2 w-full lg:w-[48%] space-y-3 sm:space-y-4 lg:space-y-6 lg:pr-8 text-center lg:text-left px-2 lg:px-0"
+            className="absolute inset-x-0 top-[5%] sm:top-[8%] lg:top-1/2 lg:-translate-y-1/2 lg:left-0 lg:right-auto lg:w-[48%] space-y-2.5 sm:space-y-3 md:space-y-4 lg:space-y-6 lg:pr-8 text-center lg:text-left px-4 sm:px-6 lg:px-0"
           >
-            <div className="flex items-center gap-3 justify-center lg:justify-start">
-              <div className="h-px w-8 bg-gradient-to-r from-amber-500 to-transparent" />
-              <span className="font-[family-name:var(--font-orbitron)] text-[10px] sm:text-[11px] tracking-[0.3em] text-amber-400/80 uppercase">
+            <div className="flex items-center gap-2 sm:gap-3 justify-center lg:justify-start">
+              <div className="h-px w-6 sm:w-8 bg-gradient-to-r from-amber-500 to-transparent" />
+              <span className="font-[family-name:var(--font-orbitron)] text-[9px] sm:text-[10px] md:text-[11px] tracking-[0.25em] sm:tracking-[0.3em] text-amber-400/80 uppercase">
                 Fundador
               </span>
             </div>
 
-            <h2 className="font-[family-name:var(--font-orbitron)] text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-bold leading-[1.05] tracking-tight">
+            <h2 className="font-[family-name:var(--font-orbitron)] text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold leading-[1.05] tracking-tight">
               <span className="text-white">Eddy</span>
               <br />
               <span
@@ -517,25 +531,25 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
               </span>
             </h2>
 
-            <div className="h-px w-16 lg:w-20 bg-gradient-to-r from-amber-500/60 via-orange-500/30 to-transparent mx-auto lg:mx-0" />
+            <div className="h-px w-14 sm:w-16 lg:w-20 bg-gradient-to-r from-amber-500/60 via-orange-500/30 to-transparent mx-auto lg:mx-0" />
 
-            <div className="relative pl-4 lg:pl-5 border-l-2 border-amber-500/30 text-left mx-auto lg:mx-0 max-w-md lg:max-w-lg">
-              <p className="font-[family-name:var(--font-inter)] text-sm sm:text-base lg:text-xl text-white/80 italic font-light leading-relaxed">
+            <div className="relative pl-3 sm:pl-4 lg:pl-5 border-l-2 border-amber-500/30 text-left mx-auto lg:mx-0 max-w-[85%] sm:max-w-md lg:max-w-lg">
+              <p className="font-[family-name:var(--font-inter)] text-[13px] sm:text-sm md:text-base lg:text-xl text-white/80 italic font-light leading-relaxed">
                 &ldquo;Su misión ha sido inspirar a las nuevas generaciones a mirar hacia las estrellas y descubrir los misterios que nos rodean.&rdquo;
               </p>
             </div>
 
-            <p className="font-[family-name:var(--font-inter)] text-xs sm:text-sm lg:text-base text-white/50 leading-relaxed max-w-md lg:max-w-lg font-light mx-auto lg:mx-0">
+            <p className="font-[family-name:var(--font-inter)] text-[12px] sm:text-xs md:text-sm lg:text-base text-white/50 leading-relaxed max-w-[85%] sm:max-w-md lg:max-w-lg font-light mx-auto lg:mx-0 hidden sm:block">
               Como fundador visionario de CALA, Eddy ha dedicado años de pasión a la divulgación
               científica. Su liderazgo es el núcleo gravitacional que mantiene unida a nuestra comunidad
               de exploradores.
             </p>
 
-            <div className="flex flex-wrap gap-2 sm:gap-3 pt-1 justify-center lg:justify-start">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 md:gap-3 pt-1 justify-center lg:justify-start">
               {["Presidente", "Astrónomo", "Mentor"].map((tag) => (
                 <span
                   key={tag}
-                  className="px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-full bg-white/[0.04] border border-amber-500/15 text-white/60 text-xs sm:text-sm font-[family-name:var(--font-inter)]"
+                  className="px-2.5 py-1 sm:px-4 sm:py-1.5 md:px-5 md:py-2.5 rounded-full bg-white/[0.04] border border-amber-500/15 text-white/60 text-[11px] sm:text-xs md:text-sm font-[family-name:var(--font-inter)]"
                 >
                   {tag}
                 </span>
@@ -543,15 +557,15 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
             </div>
           </div>
 
-          {/* Black hole image — mobile: centered middle / desktop: absolute right */}
+          {/* Black hole image — mobile: centered bottom / desktop: right half */}
           <div
             ref={bhImageRef}
-            className="absolute left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-0 bottom-[8%] lg:bottom-auto lg:top-1/2 lg:-translate-y-1/2 w-[55%] sm:w-[50%] lg:w-[45%] flex justify-center"
+            className="absolute left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-0 bottom-[5%] sm:bottom-[6%] lg:bottom-auto lg:top-1/2 lg:-translate-y-1/2 w-[48%] sm:w-[42%] md:w-[38%] lg:w-[45%] flex justify-center"
           >
-            <div className="relative w-full max-w-xs sm:max-w-sm lg:max-w-lg">
-              {/* Ambient glow behind the black hole */}
+            <div className="relative w-full max-w-[200px] sm:max-w-xs md:max-w-sm lg:max-w-lg">
+              {/* Ambient glow behind the black hole — hidden on small mobile for perf */}
               <div
-                className="absolute inset-0 -m-6 lg:-m-8 rounded-full blur-[60px] lg:blur-[80px]"
+                className="absolute inset-0 -m-4 sm:-m-6 lg:-m-8 rounded-full hidden sm:block sm:blur-[40px] lg:blur-[80px]"
                 style={{
                   background:
                     "radial-gradient(circle, rgba(251,191,36,0.12) 0%, rgba(245,158,11,0.06) 40%, transparent 70%)",
@@ -568,13 +582,13 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
           {/* Eddy's photo — expelled from black hole: below (mobile) / right (desktop) */}
           <div
             ref={eddyImageRef}
-            className="absolute left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-[5%] bottom-[5%] lg:bottom-auto lg:top-1/2 lg:-translate-y-1/2 w-[42%] sm:w-[38%] lg:w-[35%] opacity-0"
+            className="absolute left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-[5%] bottom-[12%] sm:bottom-[14%] lg:bottom-auto lg:top-1/2 lg:-translate-y-1/2 w-[50%] sm:w-[45%] md:w-[40%] lg:w-[42%] opacity-0"
           >
-            <div className="relative w-full max-w-[200px] sm:max-w-xs lg:max-w-sm mx-auto lg:mx-0 lg:ml-auto">
-              {/* Glow behind photo */}
-              <div className="absolute -inset-2 bg-gradient-to-b from-amber-500/25 via-transparent to-orange-500/15 rounded-2xl blur-lg opacity-70" />
+            <div className="relative w-full max-w-[220px] sm:max-w-xs md:max-w-sm lg:max-w-md mx-auto lg:mx-0 lg:ml-auto">
+              {/* Glow behind photo — hidden on small mobile for perf */}
+              <div className="absolute -inset-1.5 sm:-inset-2 bg-gradient-to-b from-amber-500/25 via-transparent to-orange-500/15 rounded-xl sm:rounded-2xl hidden sm:block sm:blur-md lg:blur-lg opacity-70" />
 
-              <div className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden">
+              <div className="relative w-full aspect-[3/4] rounded-xl sm:rounded-2xl overflow-hidden">
                 <Image
                   src="/images/DonEddy.png"
                   alt="Eddy Martínez"
@@ -586,11 +600,11 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
                 <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent" />
 
                 {/* Name overlay at the bottom */}
-                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 lg:p-5">
-                  <p className="font-[family-name:var(--font-orbitron)] text-[8px] sm:text-[9px] lg:text-[10px] tracking-[0.3em] text-amber-400/70 uppercase mb-1 sm:mb-1.5">
+                <div className="absolute bottom-0 left-0 right-0 p-2.5 sm:p-3 md:p-4 lg:p-5">
+                  <p className="font-[family-name:var(--font-orbitron)] text-[7px] sm:text-[8px] md:text-[9px] lg:text-[10px] tracking-[0.25em] sm:tracking-[0.3em] text-amber-400/70 uppercase mb-0.5 sm:mb-1 md:mb-1.5">
                     Fundador
                   </p>
-                  <h3 className="font-[family-name:var(--font-orbitron)] text-base sm:text-lg lg:text-2xl font-bold text-white leading-tight">
+                  <h3 className="font-[family-name:var(--font-orbitron)] text-sm sm:text-base md:text-lg lg:text-2xl font-bold text-white leading-tight">
                     Eddy
                     <br />
                     <span
@@ -620,7 +634,7 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
           ref={titleRef}
           className="will-change-transform flex flex-col items-center"
         >
-          <h1 className="text-glow font-[family-name:var(--font-orbitron)] text-5xl sm:text-7xl md:text-9xl lg:text-[10rem] font-bold tracking-[0.15em] sm:tracking-[0.3em] text-white text-center leading-none">
+          <h1 className="text-glow font-[family-name:var(--font-orbitron)] text-4xl sm:text-7xl md:text-9xl lg:text-[10rem] font-bold tracking-[0.1em] sm:tracking-[0.15em] md:tracking-[0.3em] text-white text-center leading-none">
             CALA
           </h1>
 
@@ -632,15 +646,22 @@ export default function BlackHoleHero({ onScrollProgress }: BlackHoleHeroProps) 
         </div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll indicator — animated mouse icon */}
       <div
         ref={scrollIndicatorRef}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2"
+        className="absolute bottom-14 sm:bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 sm:gap-3"
       >
-        <span className="font-[family-name:var(--font-inter)] text-white/50 text-sm tracking-widest uppercase">
+        {/* Mouse outline */}
+        <div className="w-6 h-10 rounded-full border-2 border-white/40 relative flex justify-center">
+          {/* Scroll wheel dot */}
+          <div
+            className="w-1 h-2.5 rounded-full bg-white/70 mt-2"
+            style={{ animation: "scroll-wheel 1.5s ease-in-out infinite" }}
+          />
+        </div>
+        <span className="font-[family-name:var(--font-inter)] text-white/40 text-[10px] tracking-[0.3em] uppercase">
           Scroll
         </span>
-        <div className="w-[1px] h-10 bg-gradient-to-b from-white/50 to-transparent animate-pulse" />
       </div>
 
       {/* Fade to black — end of experience */}

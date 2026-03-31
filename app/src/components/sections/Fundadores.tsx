@@ -77,7 +77,7 @@ export default function Fundadores() {
     <section
       id="fundadores"
       ref={sectionRef}
-      className="min-h-screen flex items-center justify-center px-6 lg:px-24 relative overflow-hidden py-24"
+      className="min-h-screen flex items-center justify-center px-6 md:px-12 lg:px-24 relative overflow-hidden py-16 sm:py-24"
     >
       {/* Black hole background image */}
       <div
@@ -120,20 +120,20 @@ export default function Fundadores() {
       {/* Decorative floating orbs — warm amber tones */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-[2]">
         <div
-          className="absolute top-[15%] right-[10%] w-[400px] h-[400px] rounded-full bg-amber-500/[0.06] blur-[150px]"
+          className="absolute top-[15%] right-[10%] w-[200px] h-[200px] sm:w-[300px] sm:h-[300px] lg:w-[400px] lg:h-[400px] rounded-full bg-amber-500/[0.06] blur-[80px] sm:blur-[120px] lg:blur-[150px]"
           style={{ animation: "float 22s ease-in-out infinite" }}
         />
         <div
-          className="absolute bottom-[20%] left-[5%] w-[350px] h-[350px] rounded-full bg-orange-600/[0.05] blur-[130px]"
+          className="absolute bottom-[20%] left-[5%] w-[180px] h-[180px] sm:w-[280px] sm:h-[280px] lg:w-[350px] lg:h-[350px] rounded-full bg-orange-600/[0.05] blur-[80px] sm:blur-[100px] lg:blur-[130px]"
           style={{ animation: "float-reverse 28s ease-in-out infinite" }}
         />
         <div
-          className="absolute top-[60%] right-[30%] w-[200px] h-[200px] rounded-full bg-yellow-500/[0.04] blur-[100px]"
+          className="absolute top-[60%] right-[30%] w-[120px] h-[120px] sm:w-[200px] sm:h-[200px] rounded-full bg-yellow-500/[0.04] blur-[60px] sm:blur-[100px]"
           style={{ animation: "float 18s ease-in-out infinite 5s" }}
         />
       </div>
 
-      <div className="max-w-7xl w-full mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      <div className="max-w-7xl w-full mx-auto relative z-10 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 lg:gap-20 items-center">
 
         {/* Image with gradient border effect */}
         <div ref={imageRef} className="relative flex justify-center lg:justify-start">
@@ -168,7 +168,7 @@ export default function Fundadores() {
           {/* Name */}
           <h2
             ref={nameRef}
-            className="font-[family-name:var(--font-orbitron)] text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight"
+            className="font-[family-name:var(--font-orbitron)] text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold leading-[1.05] tracking-tight"
           >
             <span className="text-white">Eddy</span>
             <br />
